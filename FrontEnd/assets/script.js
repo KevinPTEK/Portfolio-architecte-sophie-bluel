@@ -27,16 +27,20 @@
 // 2eme Version 
 // variable global 
 let works = []
+let categories = []
 const gallery = document.querySelector(".gallery")
+const filters = document.querySelector(".filters")
 
-// Responsabilité 1 : récupérer les données
+
+// récupérer les données de works pour la gallery
 async function fetchWorks() {
     const reponse = await fetch("http://localhost:5678/api/works")
     works = await reponse.json()
 }
 
-// Responsabilité 2 : afficher les données
+// afficher les données de works pour la gallery
 function renderGallery () {
+
     for (let i = 0; i < works.length; i++){
         const work = works[i]
         
@@ -55,11 +59,40 @@ function renderGallery () {
     }
 }
 
+
+// Récupérer les données de categories pour les boutons filtres
+async function fetchCategories() {
+    const reponse = await fetch("http://localhost:5678/api/categories")
+    categories = await reponse.json()
+}
+
+// afficher les données de categories pour les boutons filtres
+function renderBtnFilter () {
+    
+    //Création du bouton "Tous"
+    const btnAll = document.createElement("button")
+    btnAll.classList.add("filters__btn")
+    btnAll.innerText = ("Tous")
+    filters.appendChild(btnAll)
+
+    for (let i = 0; i < categories.length; i++) {
+        const categorie = categories[i]
+
+        const btn = document.createElement("button")
+        btn.classList.add("filters__btn")
+        btn.innerText = categorie.name
+        filters.appendChild(btn)
+    }
+    
+}
+
 // point d'entrée unique 
-async function initGallery() {
+async function init() {
     await fetchWorks()
+    await fetchCategories()
     renderGallery()
+    renderBtnFilter()
 }
 
 //init
-initGallery()
+init()
