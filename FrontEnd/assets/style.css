@@ -204,5 +204,10 @@ footer nav ul {
     font-size: 16px;
     color: #1D6154;
     padding: 9px 20px;
-    cursor: pointer;
+	cursor: pointer;
+}
+
+.filters__btn:hover {
+	background-color: #1D6154;
+	color: white;
 }
