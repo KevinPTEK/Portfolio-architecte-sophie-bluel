@@ -33,12 +33,10 @@ const gallery = document.querySelector(".gallery")
 async function fetchWorks() {
     const reponse = await fetch("http://localhost:5678/api/works")
     works = await reponse.json()
-    console.log("works après fetch :", works)
 }
 
 // Responsabilité 2 : afficher les données
 function renderGallery () {
-    console.log("works dans renderGallery :", works)
     for (let i = 0; i < works.length; i++){
         const work = works[i]
         

@@ -186,3 +186,23 @@ footer nav ul {
 	margin: 2em
 }
 
+/* ajout nouveau code */
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 51px;
+    margin-bottom: 50px;
+}
+
+.filters__btn {
+    border-radius: 60px;
+	border: 1px solid #1D6154;
+    background-color: white;
+    font-weight: 700;
+    font-size: 16px;
+    color: #1D6154;
+    padding: 9px 20px;
+    cursor: pointer;
+}
