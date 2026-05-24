@@ -270,3 +270,9 @@ h1 span {
 	font-size:10px;
 	letter-spacing: 0.1em;
 }
+.logIn__error {
+    color: #c0392b;
+    font-size: 0.85rem;
+    text-align: center;
+    min-height: 1.2em; /* évite le saut de mise en page quand le message apparaît */
+}
