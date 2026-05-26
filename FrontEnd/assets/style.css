@@ -274,5 +274,6 @@ h1 span {
     color: #c0392b;
     font-size: 0.85rem;
     text-align: center;
-    min-height: 1.2em; /* évite le saut de mise en page quand le message apparaît */
+    min-height: 1.2em;
+	padding-top: 1.2em;
 }

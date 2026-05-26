@@ -17,9 +17,18 @@ export function ajoutListenerEnvoyerLogIn() {
             body: sendLogIn
         });
 
-        let token = await reponse.json()
-        let valueToken = JSON.stringify(token.token);
-        window.localStorage.setItem("token", valueToken);
+        if (reponse.ok) {
+            let save = await reponse.json()
+            
+            window.localStorage.setItem("token", save.token);
+            window.location.href = "../index.html"
+        } else {
+            const error = document.querySelector(".logIn__error")
+            error.textContent = "Identifiants incorrects, veuillez réessayer."
+            console.error("Erreur lors de la connexion :", error)
+        }
+
+        console.log(Error)
         console.log(sendLogIn)
         console.log(token)
         
