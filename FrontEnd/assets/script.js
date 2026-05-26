@@ -3,7 +3,6 @@ let works = [];
 let categories = [];
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
-const tokenPresent = localStorage.getItem("token");
 const changeLogin = document.querySelector(".conexion");
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
@@ -101,22 +100,39 @@ function renderBtnFilter() {
 }
 
 
-
+//connexion et deconnexion
 function activeConexion() {
+    const tokenPresent = localStorage.getItem("token");
+    
     if (tokenPresent !== null) {
         changeLogin.innerText = "logout";
-    }
+
+        const editionMode = document.createElement("div")
+        editionMode.classList.add("editionMode")
+
+        const editionModeImg = document.createElement("img");
+        const editionModeP = document.createElement("p");
+
+        editionModeImg.src = "assets/icons/edition.png";
+        editionModeImg.alt = "logo d'édition";
+        editionModeP.innerText = "Mode édition";
+
+        document.body.prepend(editionMode);
+        editionMode.appendChild(editionModeImg);
+        editionMode.appendChild(editionModeP);
+    } 
 }
 
 function connexion() {
     
     changeLogin.addEventListener("click", () => {
-
+        const tokenPresent = localStorage.getItem("token");
         if (tokenPresent === null) {
         window.location.href = "page/login.html";
             } else {
                 localStorage.removeItem("token");
                 changeLogin.innerText = "login";
+                document.querySelector(".editionMode").remove()
             }
     })
 }

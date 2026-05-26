@@ -277,3 +277,33 @@ h1 span {
     min-height: 1.2em;
 	padding-top: 1.2em;
 }
+.conexion {
+	cursor: pointer;
+}
+.editionMode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 11px;
+    height: 59px;
+    color: white;
+    background-color: black;
+}
+.editionMode + header {
+    margin-top: 38px;
+}
+#editBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 31px;
+}
+
+#editBtn h2 {
+    margin: 0;
+}
+#editBtn div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
