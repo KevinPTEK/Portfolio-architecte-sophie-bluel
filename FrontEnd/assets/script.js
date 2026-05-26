@@ -3,6 +3,8 @@ let works = [];
 let categories = [];
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
+const tokenPresent = localStorage.getItem("token");
+const changeLogin = document.querySelector(".conexion");
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
 async function fetchWorks() {
@@ -98,6 +100,27 @@ function renderBtnFilter() {
     }
 }
 
+
+
+function activeConexion() {
+    if (tokenPresent !== null) {
+        changeLogin.innerText = "logout";
+    }
+}
+
+function connexion() {
+    
+    changeLogin.addEventListener("click", () => {
+
+        if (tokenPresent === null) {
+        window.location.href = "page/login.html";
+            } else {
+                localStorage.removeItem("token");
+                changeLogin.innerText = "login";
+            }
+    })
+}
+
 // Point d'entrée unique de l'application
 async function init() {
     // On attend le chargement des deux routes API
@@ -111,6 +134,8 @@ async function init() {
    
     // On génère les boutons de filtres
     renderBtnFilter();
+    connexion();
+    activeConexion();
 }
 
 // Lancement de l'application
