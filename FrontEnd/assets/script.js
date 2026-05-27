@@ -4,6 +4,7 @@ let categories = [];
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
 const changeLogin = document.querySelector(".conexion");
+const portfolio = document.querySelector("#portfolio");
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
 async function fetchWorks() {
@@ -107,8 +108,8 @@ function activeConexion() {
     if (tokenPresent !== null) {
         changeLogin.innerText = "logout";
 
-        const editionMode = document.createElement("div")
-        editionMode.classList.add("editionMode")
+        const editionMode = document.createElement("div");
+        editionMode.classList.add("editionMode");
 
         const editionModeImg = document.createElement("img");
         const editionModeP = document.createElement("p");
@@ -120,6 +121,26 @@ function activeConexion() {
         document.body.prepend(editionMode);
         editionMode.appendChild(editionModeImg);
         editionMode.appendChild(editionModeP);
+
+        const editBtn = document.createElement("div");
+        editBtn.id = "editBtn";
+
+        portfolio.prepend(editBtn);
+
+        const h2 = portfolio.querySelector("h2");
+        editBtn.appendChild(h2);
+
+        const editBtnDiv = document.createElement("div");
+        const editBtnImg = document.createElement("img");
+        const editBtnBtn = document.createElement("button");
+
+        editBtnImg.src = "assets/icons/editionBlack.png";
+        editBtnImg.alt = "logo edition";
+        editBtnBtn.innerText = "modifier";
+
+        editBtn.appendChild(editBtnDiv);
+        editBtnDiv.appendChild(editBtnImg);
+        editBtnDiv.appendChild(editBtnBtn);
     } 
 }
 
@@ -132,7 +153,10 @@ function connexion() {
             } else {
                 localStorage.removeItem("token");
                 changeLogin.innerText = "login";
-                document.querySelector(".editionMode").remove()
+                document.querySelector(".editionMode").remove();
+                const h2 = document.querySelector("#editBtn h2");
+                portfolio.prepend(h2);
+                document.querySelector("#editBtn").remove();
             }
     })
 }

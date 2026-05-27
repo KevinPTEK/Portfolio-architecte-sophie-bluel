@@ -307,3 +307,10 @@ h1 span {
     align-items: center;
     gap: 10px;
 }
+#editBtn button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Work Sans';
+    font-size: 1rem;
+}
