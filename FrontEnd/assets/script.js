@@ -92,10 +92,10 @@ function renderBtnFilter() {
             btn.classList.add("filters__btn--active");
 
             // Filtrage dynamique du tableau global
-            const worksFiltrés = works.filter(work => work.categoryId === categorie.id);
+            const worksFiltres = works.filter(work => work.categoryId === categorie.id);
            
             // Envoi du tableau filtré à la fonction d'affichage
-            renderGallery(worksFiltrés);
+            renderGallery(worksFiltres);
         });
     }
 }
@@ -106,6 +106,7 @@ function activeConexion() {
     const tokenPresent = localStorage.getItem("token");
     
     if (tokenPresent !== null) {
+        //login/logout et barre noir
         changeLogin.innerText = "logout";
 
         const editionMode = document.createElement("div");
@@ -122,6 +123,7 @@ function activeConexion() {
         editionMode.appendChild(editionModeImg);
         editionMode.appendChild(editionModeP);
 
+        //bouton modifier
         const editBtn = document.createElement("div");
         editBtn.id = "editBtn";
 
