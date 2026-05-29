@@ -3,7 +3,7 @@ let works = [];
 let categories = [];
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
-const changeLogin = document.querySelector(".conexion");
+const changeLogin = document.querySelector("#conexion");
 const portfolio = document.querySelector("#portfolio");
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
@@ -79,11 +79,11 @@ function renderBtnFilter() {
     });
 
     // Boucle "for...of" sur les catégories reçues de l'API pour créer les autres boutons
-    for (const categorie of categories) {
+    for (const category of categories) {
         const btn = document.createElement("button");
         btn.classList.add("filters__btn");
-        btn.innerText = categorie.name;
-        btn.dataset.categoriesId = categorie.id;
+        btn.innerText = category.name;
+        btn.dataset.categoriesId = category.id;
         filters.appendChild(btn);
 
         // Écouteur sur chaque bouton de catégorie
@@ -92,7 +92,7 @@ function renderBtnFilter() {
             btn.classList.add("filters__btn--active");
 
             // Filtrage dynamique du tableau global
-            const worksFiltres = works.filter(work => work.categoryId === categorie.id);
+            const worksFiltres = works.filter(work => work.categoryId === category.id);
            
             // Envoi du tableau filtré à la fonction d'affichage
             renderGallery(worksFiltres);
@@ -102,7 +102,7 @@ function renderBtnFilter() {
 
 
 //connexion et deconnexion
-function activeConexion() {
+function setupEditionMode() {
     const tokenPresent = localStorage.getItem("token");
     
     if (tokenPresent !== null) {
@@ -146,7 +146,7 @@ function activeConexion() {
     } 
 }
 
-function connexion() {
+function setupAuthLink() {
     
     changeLogin.addEventListener("click", () => {
         const tokenPresent = localStorage.getItem("token");
@@ -176,8 +176,8 @@ async function init() {
    
     // On génère les boutons de filtres
     renderBtnFilter();
-    connexion();
-    activeConexion();
+    setupAuthLink();
+    setupEditionMode();
 }
 
 // Lancement de l'application

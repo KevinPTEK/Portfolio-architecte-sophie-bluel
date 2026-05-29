@@ -277,7 +277,7 @@ h1 span {
     min-height: 1.2em;
 	padding-top: 1.2em;
 }
-.conexion {
+#conexion {
 	cursor: pointer;
 }
 .editionMode {
