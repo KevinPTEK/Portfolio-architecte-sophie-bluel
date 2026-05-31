@@ -172,7 +172,7 @@ function initModal() {
     const editGalleryBtn = document.getElementById("editGallery")
     if (editGalleryBtn) {
         editGalleryBtn.addEventListener("click", () => {
-            showModalPage("gallery")
+            showModalPage("page 1")
             modal.showModal()
         })
     }
@@ -185,7 +185,7 @@ function initModal() {
     })
 
     document.getElementById("modalBackBtn").addEventListener("click", () => {
-        showModalPage("gallery")
+        showModalPage("page 1")
     })
 
     // Fermer en cliquant sur le backdrop
@@ -200,7 +200,7 @@ function showModalPage(page) {
     const pageGallery = document.getElementById("modalPageGallery")
     const pageForm = document.getElementById("modalPageForm")
 
-    if (page === "gallery") {
+    if (page === "page 1") {
         pageGallery.classList.remove("modal__page--hidden")
         pageForm.classList.add("modal__page--hidden")
     } else {
