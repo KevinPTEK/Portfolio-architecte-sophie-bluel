@@ -66,7 +66,7 @@
 
 <dialog id="modal">
 	<div class="modal__container">
-		<button class="modal__close-btn">x</button>
+		<button class="modal__close-btn" id="modalCloseBtn">x</button>
 			
 			<div class="modal__page" id="modalPageGallery">
 				<h2 class="modal__title">Galerie photo</h2>
@@ -77,9 +77,40 @@
 			</div>
 
 			<div class="modal__page modal__page--hidden" id="modalPageForm">
-				<a class="modal__add-btn" id="modalBackBtn" href="assets/icons/Vector.png"></a>
+				<button class="modal__back-btn" id="modalBackBtn">
+    				<img src="assets/icons/backBtn.png" alt="retour">
+				</button>
 				<h2 class="modal__title">Ajout photo</h2>
-				<form id="modalForm"></form>
+				<form id="modalForm">
+  					
+					<!-- Zone d'upload de l'image -->
+  					<div class="modal__upload" id="modalUploadArea">
+    				<label for="photoInput" class="modal__upload-label">
+      					<img src="" alt="">
+      					<span>+ Ajouter photo</span>
+      					<span class="modal__upload-hint">jpg, png : 4mo max</span>
+    				</label>
+    				<input 
+      					type="file" 
+      					id="photoInput" 
+      					name="image" 
+      					accept="image/jpeg, image/png"
+      					class="modal__upload-input">
+  					</div>
+
+ 					<!-- Titre -->
+  					<label for="photoTitle">Titre</label>
+  					<input type="text" id="photoTitle" name="title">
+
+  					<!-- Catégorie -->
+  					<label for="photoCategory">Catégorie</label>
+  					<select id="photoCategory" name="category">
+  					</select>
+
+  					<!-- Bouton valider -->
+					<button type="submit" id="modalSubmitBtn" class="modal__submit-btn">Valider</button>
+    		
+				</form>
 			</div>
 	</div>
 </dialog>

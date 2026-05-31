@@ -5,6 +5,8 @@ const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
 const changeLogin = document.querySelector("#conexion");
 const portfolio = document.querySelector("#portfolio");
+const modal = document.querySelector("#modal");
+const modalClose = document.querySelector("#modalCloseBtn");
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
 async function fetchWorks() {
@@ -35,7 +37,7 @@ function renderGallery(listeAAfficher) {
 
         imgWorkCard.src = work.imageUrl;
         imgWorkCard.alt = work.title;
-        legendWorkCard.innerText = work.title;
+        legendWorkCard.textContent = work.title;
 
         workCard.appendChild(imgWorkCard);
         workCard.appendChild(legendWorkCard);
@@ -67,7 +69,7 @@ function renderBtnFilter() {
     const btnAll = document.createElement("button");
     btnAll.classList.add("filters__btn", "filters__btn--active");
     btnAll.dataset.categoriesId = "all";
-    btnAll.innerText = "Tous";
+    btnAll.textContent = "Tous";
     filters.appendChild(btnAll);
 
     // Écouteur sur le bouton "Tous" -> Réaffiche le tableau initial complet
@@ -82,7 +84,7 @@ function renderBtnFilter() {
     for (const category of categories) {
         const btn = document.createElement("button");
         btn.classList.add("filters__btn");
-        btn.innerText = category.name;
+        btn.textContent = category.name;
         btn.dataset.categoriesId = category.id;
         filters.appendChild(btn);
 
@@ -107,7 +109,7 @@ function setupEditionMode() {
     
     if (tokenPresent !== null) {
         //login/logout et barre noir
-        changeLogin.innerText = "logout";
+        changeLogin.textContent = "logout";
 
         const editionMode = document.createElement("div");
         editionMode.classList.add("editionMode");
@@ -117,7 +119,7 @@ function setupEditionMode() {
 
         editionModeImg.src = "assets/icons/edition.png";
         editionModeImg.alt = "logo d'édition";
-        editionModeP.innerText = "Mode édition";
+        editionModeP.textContent = "Mode édition";
 
         document.body.prepend(editionMode);
         editionMode.appendChild(editionModeImg);
@@ -135,14 +137,17 @@ function setupEditionMode() {
         const editBtnDiv = document.createElement("div");
         const editBtnImg = document.createElement("img");
         const editBtnBtn = document.createElement("button");
+        editBtnBtn.id = "editGallery";
 
         editBtnImg.src = "assets/icons/editionBlack.png";
         editBtnImg.alt = "logo edition";
-        editBtnBtn.innerText = "modifier";
+        editBtnBtn.textContent = "modifier";
 
         editBtn.appendChild(editBtnDiv);
         editBtnDiv.appendChild(editBtnImg);
         editBtnDiv.appendChild(editBtnBtn);
+
+        
     } 
 }
 
@@ -154,13 +159,21 @@ function setupAuthLink() {
         window.location.href = "page/login.html";
             } else {
                 localStorage.removeItem("token");
-                changeLogin.innerText = "login";
+                changeLogin.textContent = "login";
                 document.querySelector(".editionMode").remove();
                 const h2 = document.querySelector("#editBtn h2");
                 portfolio.prepend(h2);
                 document.querySelector("#editBtn").remove();
             }
     })
+}
+
+function initModal() {
+    const editGalleryBtn = document.getElementById("editGallery")
+    if (editGalleryBtn) { 
+        editGalleryBtn.addEventListener("click", () => modal.showModal())
+    }   
+    modalClose.addEventListener("click", () => modal.close())
 }
 
 // Point d'entrée unique de l'application
@@ -178,6 +191,7 @@ async function init() {
     renderBtnFilter();
     setupAuthLink();
     setupEditionMode();
+    initModal();
 }
 
 // Lancement de l'application
