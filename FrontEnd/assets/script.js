@@ -170,10 +170,43 @@ function setupAuthLink() {
 
 function initModal() {
     const editGalleryBtn = document.getElementById("editGallery")
-    if (editGalleryBtn) { 
-        editGalleryBtn.addEventListener("click", () => modal.showModal())
-    }   
+    if (editGalleryBtn) {
+        editGalleryBtn.addEventListener("click", () => {
+            showModalPage("gallery")
+            modal.showModal()
+        })
+    }
+
     modalClose.addEventListener("click", () => modal.close())
+
+    // Navigation entre les pages
+    document.getElementById("modalAddBtn").addEventListener("click", () => {
+        showModalPage("form")
+    })
+
+    document.getElementById("modalBackBtn").addEventListener("click", () => {
+        showModalPage("gallery")
+    })
+
+    // Fermer en cliquant sur le backdrop
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.close()
+        }
+    })
+}
+
+function showModalPage(page) {
+    const pageGallery = document.getElementById("modalPageGallery")
+    const pageForm = document.getElementById("modalPageForm")
+
+    if (page === "gallery") {
+        pageGallery.classList.remove("modal__page--hidden")
+        pageForm.classList.add("modal__page--hidden")
+    } else {
+        pageGallery.classList.add("modal__page--hidden")
+        pageForm.classList.remove("modal__page--hidden")
+    }
 }
 
 // Point d'entrée unique de l'application
@@ -192,6 +225,7 @@ async function init() {
     setupAuthLink();
     setupEditionMode();
     initModal();
+    showModalPage;
 }
 
 // Lancement de l'application
