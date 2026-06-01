@@ -7,6 +7,7 @@ const changeLogin = document.querySelector("#conexion");
 const portfolio = document.querySelector("#portfolio");
 const modal = document.querySelector("#modal");
 const modalClose = document.querySelector("#modalCloseBtn");
+const modalGallery = document.querySelector("#modalGallery")
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
 async function fetchWorks() {
@@ -168,10 +169,38 @@ function setupAuthLink() {
     })
 }
 
+function renderModalGallery() {
+    modalGallery.innerHTML = "";
+
+    for (const work of works) {
+        const li = document.createElement("li");
+        li.classList.add("modal__gallery-item");
+
+        const img = document.createElement("img");
+        img.src = work.imageUrl;
+        img.alt = work.title;
+        img.classList.add("modal__gallery-img");
+
+        const btnSupprimer = document.createElement("button");
+        btnSupprimer.dataset.id = work.id;
+        btnSupprimer.classList.add("modal__gallery-delete");
+
+        const iconeDelete = document.createElement("img");
+        iconeDelete.src = "assets/icons/delete.png";
+        iconeDelete.alt = "supprimer";
+
+        btnSupprimer.appendChild(iconeDelete);
+        li.appendChild(img);
+        li.appendChild(btnSupprimer);
+        modalGallery.appendChild(li);
+    }
+}
+
 function initModal() {
     const editGalleryBtn = document.getElementById("editGallery")
     if (editGalleryBtn) {
         editGalleryBtn.addEventListener("click", () => {
+            renderModalGallery()
             showModalPage("page 1")
             modal.showModal()
         })

@@ -526,3 +526,20 @@ dialog::backdrop {
 #modalPageForm {
     width: 100%;
 }
+
+.modal__gallery-item {
+    position: relative;
+}
+
+.modal__gallery-img {
+    width: 76px;
+}
+
+.modal__gallery-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: black;
+    border-radius: 5px;
+    align-items: center;
+}
