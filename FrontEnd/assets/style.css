@@ -523,3 +523,12 @@ dialog::backdrop {
     width: 9px;
     padding: 3px 4px;
 }
+.modal__upload-label--hidden {
+    display: none;
+}
+
+.modal__preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

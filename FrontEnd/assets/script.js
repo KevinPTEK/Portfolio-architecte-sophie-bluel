@@ -265,6 +265,44 @@ function showModalPage(page) {
     }
 }
 
+function renderCategoryOptions() {
+    const select = document.getElementById("photoCategory")
+
+    for (const categorie of categories) {
+        const option = document.createElement("option")
+        option.value = categorie.id
+        option.textContent = categorie.name
+        select.appendChild(option)
+    }
+}
+
+// 6. Afficher la prévisualisation de l'image sélectionnée
+function initImagePreview() {
+    const photoInput = document.getElementById("photoInput")
+    const uploadArea = document.getElementById("modalUploadArea")
+    const uploadLabel = uploadArea.querySelector(".modal__upload-label")
+
+    photoInput.addEventListener("change", () => {
+        const fichier = photoInput.files[0]
+        if (!fichier) return  // l'utilisateur a annulé le sélecteur
+
+        // Supprimer une éventuelle preview précédente
+        const anciennePreview = uploadArea.querySelector(".modal__preview-img")
+        if (anciennePreview) anciennePreview.remove()
+
+        // Créer l'URL temporaire et construire l'élément image
+        const urlPreview = URL.createObjectURL(fichier)
+        const imgPreview = document.createElement("img")
+        imgPreview.src = urlPreview
+        imgPreview.alt = "prévisualisation"
+        imgPreview.classList.add("modal__preview-img")
+
+        // Cacher l'icône et afficher la preview
+        uploadLabel.classList.add("modal__upload-label--hidden")
+        uploadArea.appendChild(imgPreview)
+    })
+}
+
 
 // Point d'entrée unique de l'application
 async function init() {
@@ -283,6 +321,8 @@ async function init() {
     setupEditionMode();
     initModal();
     showModalPage();
+    renderCategoryOptions();
+    initImagePreview();
 }
 
 // Lancement de l'application
