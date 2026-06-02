@@ -186,13 +186,40 @@ function renderModalGallery() {
         btnSupprimer.classList.add("modal__gallery-delete");
 
         const iconeDelete = document.createElement("img");
-        iconeDelete.src = "assets/icons/delete.png";
+        iconeDelete.src = "assets/icons/delete.svg";
         iconeDelete.alt = "supprimer";
 
         btnSupprimer.appendChild(iconeDelete);
         li.appendChild(img);
         li.appendChild(btnSupprimer);
         modalGallery.appendChild(li);
+
+        btnSupprimer.addEventListener("click", async () => {
+        const succes = await deleteWork(work.id);
+        if (succes) li.remove();
+        });
+    }
+}
+
+async function deleteWork(id) {
+    const token = localStorage.getItem("token");
+    try {
+        const reponse = await fetch(`http://localhost:5678/api/works/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!reponse.ok) {
+            throw new Error(`Erreur serveur : ${reponse.status}`);
+        }
+
+        works = works.filter(work => work.id !== id);
+        renderGallery(works);
+        return true;
+
+    } catch (erreur) {
+        console.error("Impossible de supprimer le travail :", erreur);
+        return false; 
     }
 }
 
@@ -238,6 +265,7 @@ function showModalPage(page) {
     }
 }
 
+
 // Point d'entrée unique de l'application
 async function init() {
     // On attend le chargement des deux routes API
@@ -254,7 +282,7 @@ async function init() {
     setupAuthLink();
     setupEditionMode();
     initModal();
-    showModalPage;
+    showModalPage();
 }
 
 // Lancement de l'application
