@@ -250,6 +250,8 @@ function initModal() {
             modal.close()
         }
     })
+    initImagePreview()
+    document.getElementById("modalForm").addEventListener("submit", handleFormSubmit)
 }
 
 function showModalPage(page) {
@@ -303,6 +305,107 @@ function initImagePreview() {
     })
 }
 
+// 7. Soumission du formulaire d'ajout
+async function handleFormSubmit(event) {
+    event.preventDefault()  // empêche le rechargement de page
+
+    const photoInput     = document.getElementById("photoInput")
+    const titleInput     = document.getElementById("photoTitle")
+    const categorySelect = document.getElementById("photoCategory")
+    const formError      = document.getElementById("formError")
+
+    // Réinitialiser le message d'erreur
+    formError.textContent = ""
+
+    // Validation : est-ce que tous les champs sont remplis ?
+    if (!photoInput.files[0] || !titleInput.value.trim() || !categorySelect.value) {
+        formError.textContent = "Veuillez remplir tous les champs."
+        return
+    }
+
+    const fichier = photoInput.files[0]
+    if (fichier.type !== "image/jpeg" && fichier.type !== "image/png"){
+        formError.textContent = "type de fichier incorect."
+        return
+    }
+    if (fichier.size > 4 * 1024 * 1024) {
+        formError.textContent = "poid maximum."
+        return
+    }
+
+    // Construction du FormData
+    // Les noms correspondent exactement aux champs attendus par l'API (voir Swagger)
+    const formData = new FormData()
+    formData.append("image", photoInput.files[0])
+    formData.append("title", titleInput.value.trim())
+    formData.append("category", categorySelect.value)
+
+    try {
+        const token = localStorage.getItem("token")
+
+        const reponse = await fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            body: formData
+        })
+
+        if (!reponse.ok) throw new Error(`Erreur serveur : ${reponse.status}`)
+
+        // L'API renvoie le nouveau travail créé, avec son id généré en base
+        const nouveauTravail = await reponse.json()
+
+        // Mettre à jour le state centralisé
+        nouveauTravail.categoryId = parseInt(nouveauTravail.categoryId)
+        works.push(nouveauTravail)
+
+        console.log("Nouveau travail reçu :", nouveauTravail)
+        console.log("Tableau works complet :", works)
+
+        // Re-render les deux galeries avec la liste à jour
+        renderGallery(works)
+        renderModalGallery()
+
+        // Revenir à la page galerie de la modale
+        showModalPage("page 1")
+
+        // Remettre le formulaire dans son état initial
+        resetForm()
+
+    } catch (erreur) {
+        console.error("Impossible d'ajouter le travail :", erreur)
+        formError.textContent = "Une erreur est survenue. Réessayez."
+    }
+}
+
+// 8. Remettre le formulaire dans son état initial après un succès
+function resetForm() {
+    document.getElementById("modalForm").reset()
+
+    const uploadArea  = document.getElementById("modalUploadArea")
+    const uploadLabel = uploadArea.querySelector(".modal__upload-label")
+    const previewImg  = uploadArea.querySelector(".modal__preview-img")
+
+    uploadLabel.classList.remove("modal__upload-label--hidden")
+    if (previewImg) previewImg.remove()
+}
+
+function initFormValidationStyle() {
+    const photoInput     = document.getElementById("photoInput")
+    const titleInput     = document.getElementById("photoTitle")
+    const categorySelect = document.getElementById("photoCategory")
+
+    function updateButtonStyle() {
+        if (photoInput || titleInput || categorySelect === true){
+            const btnValidationGreen = document.querySelector("#modalSubmitBtn")
+            btnValidationGreen.classList.add("modal__submit-btn")
+        }
+    }
+
+    // écouter les 3 champs avec le bon événement pour chacun
+}
+
 
 // Point d'entrée unique de l'application
 async function init() {
@@ -317,12 +420,11 @@ async function init() {
    
     // On génère les boutons de filtres
     renderBtnFilter();
+    renderCategoryOptions();
     setupAuthLink();
     setupEditionMode();
     initModal();
-    showModalPage();
-    renderCategoryOptions();
-    initImagePreview();
+    showModalPage("page 1");
 }
 
 // Lancement de l'application
