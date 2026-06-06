@@ -297,6 +297,7 @@ h1 span {
     align-items: center;
     justify-content: center;
     gap: 31px;
+    padding-bottom: 92px;
 }
 
 #editBtn h2 {
@@ -538,4 +539,7 @@ dialog::backdrop {
 }
 .modal__submit-btn--active { 
     background-color: #1d6154;
+}
+.hidden {
+    display: none;
 }

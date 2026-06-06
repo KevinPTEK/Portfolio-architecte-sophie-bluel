@@ -1,12 +1,14 @@
 
 
-// Evenement au clic sur le formulaire 
+// Intercepte la soumission du formulaire de connexion
+// Appelle fetchLogIn, stocke le token en localStorage et redirige vers l'accueil
+// Affiche un message d'erreur si les identifiants sont incorrects
 async function handleSubmitLogIn(event) {
     event.preventDefault()
 
     const credentials = {
-        email: event.target.querySelector("[name=email").value,
-        password: event.target.querySelector("[name=password").value,
+        email: event.target.querySelector("[name=email]").value,
+        password: event.target.querySelector("[name=password]").value,
     }
 
     try {
@@ -19,7 +21,8 @@ async function handleSubmitLogIn(event) {
     }
 }
 
-//Dialogue avec le serveur
+// Envoie les identifiants à l'API via POST et retourne le token JWT
+// Lève une erreur si la réponse HTTP n'est pas OK (mauvais identifiants, serveur KO...)
 async function fetchLogIn(credentials) {
     const reponse = await fetch("http://localhost:5678/api/users/login", {
         method: "POST",
@@ -35,6 +38,7 @@ async function fetchLogIn(credentials) {
     return data.token
 }
 
+// Branche l'écouteur de soumission sur le formulaire de connexion
 function initLogIn() {
     const form = document.querySelector(".logIn__username")
     form.addEventListener("submit", handleSubmitLogIn)

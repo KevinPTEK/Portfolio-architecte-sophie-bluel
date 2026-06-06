@@ -1,208 +1,220 @@
 // Variables globales
-let works = [];
-let categories = [];
-const gallery = document.querySelector(".gallery");
-const filters = document.querySelector(".filters");
-const changeLogin = document.querySelector("#conexion");
-const portfolio = document.querySelector("#portfolio");
-const modal = document.querySelector("#modal");
-const modalClose = document.querySelector("#modalCloseBtn");
+let works = []
+let categories = []
+const gallery = document.querySelector(".gallery")
+const filters = document.querySelector(".filters")
+const changeLogin = document.querySelector("#conexion")
+const portfolio = document.querySelector("#portfolio")
+const modal = document.querySelector("#modal")
+const modalClose = document.querySelector("#modalCloseBtn")
 const modalGallery = document.querySelector("#modalGallery")
 
 // 1. Récupérer les données de works via l'API (Sécurisé)
 async function fetchWorks() {
     try {
-        const reponse = await fetch("http://localhost:5678/api/works");
+        const reponse = await fetch("http://localhost:5678/api/works")
        
         // On vérifie si le serveur a bien répondu
         if (!reponse.ok) {
-            throw new Error(`Erreur HTTP ! Statut : ${reponse.status}`);
+            throw new Error(`Erreur HTTP ! Statut : ${reponse.status}`)
         }
        
-        works = await reponse.json();
+        works = await reponse.json()
     } catch (erreur) {
-        console.error("Impossible de récupérer les travaux :", erreur);
-        gallery.innerHTML = "<p style='color: red; text-align: center;'>Erreur lors du chargement des projets.</p>";
+        console.error("Impossible de récupérer les travaux :", erreur)
+        gallery.innerHTML = "<p style='color: red; text-align: center;'>Erreur lors du chargement des projets.</p>"
     }
 }
 
-// 2. Afficher les données de works dans la gallery
+// Vide la galerie et la reconstruit depuis la liste passée en paramètre
+// Appelée avec `works` au démarrage, avec une liste filtrée au clic sur un bouton
 function renderGallery(listeAAfficher) {
     // On vide impérativement la galerie pour effacer les anciennes images
-    gallery.innerHTML = "";
+    gallery.innerHTML = ""
 
     for (const work of listeAAfficher) {
-        const workCard = document.createElement("figure");
-        const imgWorkCard = document.createElement("img");
-        const legendWorkCard = document.createElement("figcaption");
+        const workCard = document.createElement("figure")
+        const imgWorkCard = document.createElement("img")
+        const legendWorkCard = document.createElement("figcaption")
 
-        imgWorkCard.src = work.imageUrl;
-        imgWorkCard.alt = work.title;
-        legendWorkCard.textContent = work.title;
+        imgWorkCard.src = work.imageUrl
+        imgWorkCard.alt = work.title
+        legendWorkCard.textContent = work.title
 
-        workCard.appendChild(imgWorkCard);
-        workCard.appendChild(legendWorkCard);
-        gallery.appendChild(workCard);
+        workCard.appendChild(imgWorkCard)
+        workCard.appendChild(legendWorkCard)
+        gallery.appendChild(workCard)
     }
 }
 
-// 3. Récupérer les données de categories via l'API (Sécurisé)
+// Interroge l'API et remplit le tableau global `categories`
 async function fetchCategories() {
     try {
-        const reponse = await fetch("http://localhost:5678/api/categories");
+        const reponse = await fetch("http://localhost:5678/api/categories")
        
         if (!reponse.ok) {
-            throw new Error(`Erreur HTTP ! Statut : ${reponse.status}`);
+            throw new Error(`Erreur HTTP ! Statut : ${reponse.status}`)
         }
        
-        categories = await reponse.json();
+        categories = await reponse.json()
     } catch (erreur) {
-        console.error("Impossible de récupérer les catégories :", erreur);
+        console.error("Impossible de récupérer les catégories :", erreur)
     }
 }
 
-// 4. Afficher les boutons filtres et gérer le tri au clic
+// Crée dynamiquement les boutons de filtre depuis le tableau `categories`
+// Branche un écouteur sur chaque bouton pour filtrer et réafficher la galerie
 function renderBtnFilter() {
     // On s'assure que la zone des filtres est vide au départ
-    filters.innerHTML = "";
+    filters.innerHTML = ""
    
     // Création manuelle du bouton "Tous"
-    const btnAll = document.createElement("button");
-    btnAll.classList.add("filters__btn", "filters__btn--active");
-    btnAll.dataset.categoriesId = "all";
-    btnAll.textContent = "Tous";
-    filters.appendChild(btnAll);
+    const btnAll = document.createElement("button")
+    btnAll.classList.add("filters__btn", "filters__btn--active")
+    btnAll.dataset.categoriesId = "all"
+    btnAll.textContent = "Tous"
+    filters.appendChild(btnAll)
 
     // Écouteur sur le bouton "Tous" -> Réaffiche le tableau initial complet
     btnAll.addEventListener("click", () => {
-        document.querySelector(".filters__btn--active")?.classList.remove("filters__btn--active");
-        btnAll.classList.add("filters__btn--active");
+        document.querySelector(".filters__btn--active")?.classList.remove("filters__btn--active")
+        btnAll.classList.add("filters__btn--active")
        
-        renderGallery(works);
+        renderGallery(works)
     });
 
     // Boucle "for...of" sur les catégories reçues de l'API pour créer les autres boutons
     for (const category of categories) {
-        const btn = document.createElement("button");
-        btn.classList.add("filters__btn");
-        btn.textContent = category.name;
-        btn.dataset.categoriesId = category.id;
-        filters.appendChild(btn);
+        const btn = document.createElement("button")
+        btn.classList.add("filters__btn")
+        btn.textContent = category.name
+        btn.dataset.categoriesId = category.id
+        filters.appendChild(btn)
 
         // Écouteur sur chaque bouton de catégorie
         btn.addEventListener("click", () => {
-            document.querySelector(".filters__btn--active")?.classList.remove("filters__btn--active");
-            btn.classList.add("filters__btn--active");
+            document.querySelector(".filters__btn--active")?.classList.remove("filters__btn--active")
+            btn.classList.add("filters__btn--active")
 
             // Filtrage dynamique du tableau global
-            const worksFiltres = works.filter(work => work.categoryId === category.id);
+            const worksFiltres = works.filter(work => work.categoryId === category.id)
            
             // Envoi du tableau filtré à la fonction d'affichage
-            renderGallery(worksFiltres);
+            renderGallery(worksFiltres)
         });
     }
 }
 
 
-//connexion et deconnexion
+// Vérifie la présence du token en localStorage
+// Si connecté : affiche la barre mode édition, change login→logout,
+// ajoute le bouton modifier et masque les filtres
 function setupEditionMode() {
-    const tokenPresent = localStorage.getItem("token");
+    const tokenPresent = localStorage.getItem("token")
     
     if (tokenPresent !== null) {
         //login/logout et barre noir
-        changeLogin.textContent = "logout";
+        changeLogin.textContent = "logout"
 
-        const editionMode = document.createElement("div");
-        editionMode.classList.add("editionMode");
+        const editionMode = document.createElement("div")
+        editionMode.classList.add("editionMode")
 
-        const editionModeImg = document.createElement("img");
-        const editionModeP = document.createElement("p");
+        const editionModeImg = document.createElement("img")
+        const editionModeP = document.createElement("p")
 
-        editionModeImg.src = "assets/icons/edition.png";
-        editionModeImg.alt = "logo d'édition";
-        editionModeP.textContent = "Mode édition";
+        editionModeImg.src = "assets/icons/edition.png"
+        editionModeImg.alt = "logo d'édition"
+        editionModeP.textContent = "Mode édition"
 
-        document.body.prepend(editionMode);
-        editionMode.appendChild(editionModeImg);
-        editionMode.appendChild(editionModeP);
+        document.body.prepend(editionMode)
+        editionMode.appendChild(editionModeImg)
+        editionMode.appendChild(editionModeP)
 
         //bouton modifier
-        const editBtn = document.createElement("div");
-        editBtn.id = "editBtn";
+        const editBtn = document.createElement("div")
+        editBtn.id = "editBtn"
 
-        portfolio.prepend(editBtn);
+        portfolio.prepend(editBtn)
 
-        const h2 = portfolio.querySelector("h2");
-        editBtn.appendChild(h2);
+        const h2 = portfolio.querySelector("h2")
+        editBtn.appendChild(h2)
 
-        const editBtnDiv = document.createElement("div");
-        const editBtnImg = document.createElement("img");
-        const editBtnBtn = document.createElement("button");
-        editBtnBtn.id = "editGallery";
+        const editBtnDiv = document.createElement("div")
+        const editBtnImg = document.createElement("img")
+        const editBtnBtn = document.createElement("button")
+        editBtnBtn.id = "editGallery"
 
-        editBtnImg.src = "assets/icons/editionBlack.png";
-        editBtnImg.alt = "logo edition";
-        editBtnBtn.textContent = "modifier";
+        editBtnImg.src = "assets/icons/editionBlack.png"
+        editBtnImg.alt = "logo edition"
+        editBtnBtn.textContent = "modifier"
 
-        editBtn.appendChild(editBtnDiv);
-        editBtnDiv.appendChild(editBtnImg);
-        editBtnDiv.appendChild(editBtnBtn);
+        editBtn.appendChild(editBtnDiv)
+        editBtnDiv.appendChild(editBtnImg)
+        editBtnDiv.appendChild(editBtnBtn)
 
-        
+        filters.classList.add("hidden")
     } 
 }
 
+// Branche l'écouteur sur le lien login/logout de la navigation
+// Redirige vers la page login si déconnecté,
+// ou supprime le token et restaure l'UI complète si connecté
 function setupAuthLink() {
     
     changeLogin.addEventListener("click", () => {
-        const tokenPresent = localStorage.getItem("token");
+        const tokenPresent = localStorage.getItem("token")
         if (tokenPresent === null) {
-        window.location.href = "page/login.html";
+        window.location.href = "page/login.html"
             } else {
-                localStorage.removeItem("token");
-                changeLogin.textContent = "login";
-                document.querySelector(".editionMode").remove();
-                const h2 = document.querySelector("#editBtn h2");
-                portfolio.prepend(h2);
-                document.querySelector("#editBtn").remove();
+                localStorage.removeItem("token")
+                changeLogin.textContent = "login"
+                document.querySelector(".editionMode").remove()
+                const h2 = document.querySelector("#editBtn h2")
+                portfolio.prepend(h2)
+                document.querySelector("#editBtn").remove()
+                filters.classList.remove("hidden")
             }
     })
 }
 
+// Vide et reconstruit la galerie de la modale depuis le tableau global `works`
+// Branche un écouteur de suppression sur chaque item
 function renderModalGallery() {
-    modalGallery.innerHTML = "";
+    modalGallery.innerHTML = ""
 
     for (const work of works) {
-        const li = document.createElement("li");
-        li.classList.add("modal__gallery-item");
+        const li = document.createElement("li")
+        li.classList.add("modal__gallery-item")
 
-        const img = document.createElement("img");
-        img.src = work.imageUrl;
-        img.alt = work.title;
-        img.classList.add("modal__gallery-img");
+        const img = document.createElement("img")
+        img.src = work.imageUrl
+        img.alt = work.title
+        img.classList.add("modal__gallery-img")
 
-        const btnSupprimer = document.createElement("button");
-        btnSupprimer.dataset.id = work.id;
-        btnSupprimer.classList.add("modal__gallery-delete");
+        const btnSupprimer = document.createElement("button")
+        btnSupprimer.dataset.id = work.id
+        btnSupprimer.classList.add("modal__gallery-delete")
 
-        const iconeDelete = document.createElement("img");
-        iconeDelete.src = "assets/icons/delete.svg";
-        iconeDelete.alt = "supprimer";
+        const iconeDelete = document.createElement("img")
+        iconeDelete.src = "assets/icons/delete.svg"
+        iconeDelete.alt = "supprimer"
 
-        btnSupprimer.appendChild(iconeDelete);
-        li.appendChild(img);
-        li.appendChild(btnSupprimer);
-        modalGallery.appendChild(li);
+        btnSupprimer.appendChild(iconeDelete)
+        li.appendChild(img)
+        li.appendChild(btnSupprimer)
+        modalGallery.appendChild(li)
 
         btnSupprimer.addEventListener("click", async () => {
-        const succes = await deleteWork(work.id);
-        if (succes) li.remove();
-        });
+        const succes = await deleteWork(work.id)
+        if (succes) li.remove()
+        })
     }
 }
 
+// Envoie une requête DELETE à l'API pour supprimer un travail par son id
+// Met à jour le state global `works` et resynchronise la galerie principale
 async function deleteWork(id) {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
     try {
         const reponse = await fetch(`http://localhost:5678/api/works/${id}`, {
             method: "DELETE",
@@ -223,6 +235,9 @@ async function deleteWork(id) {
     }
 }
 
+// Branche tous les écouteurs de la modale :
+// ouverture, fermeture (croix + backdrop), navigation entre les deux pages
+// Délègue l'initialisation de la preview image et du formulaire
 function initModal() {
     const editGalleryBtn = document.getElementById("editGallery")
     if (editGalleryBtn) {
@@ -254,6 +269,8 @@ function initModal() {
     document.getElementById("modalForm").addEventListener("submit", handleFormSubmit)
 }
 
+// Affiche la page demandée et cache l'autre via la classe modal__page--hidden
+// "page 1" → galerie de la modale | "form" → formulaire d'ajout
 function showModalPage(page) {
     const pageGallery = document.getElementById("modalPageGallery")
     const pageForm = document.getElementById("modalPageForm")
@@ -267,6 +284,8 @@ function showModalPage(page) {
     }
 }
 
+// Peuple le <select> des catégories du formulaire d'ajout
+// depuis le tableau global `categories` — appelée une seule fois au démarrage
 function renderCategoryOptions() {
     const select = document.getElementById("photoCategory")
 
@@ -278,7 +297,8 @@ function renderCategoryOptions() {
     }
 }
 
-// 6. Afficher la prévisualisation de l'image sélectionnée
+// Branche l'écouteur sur l'input fichier
+// Génère et affiche une prévisualisation via URL.createObjectURL() dès qu'une image est choisie
 function initImagePreview() {
     const photoInput = document.getElementById("photoInput")
     const uploadArea = document.getElementById("modalUploadArea")
@@ -305,7 +325,9 @@ function initImagePreview() {
     })
 }
 
-// 7. Soumission du formulaire d'ajout
+// Intercepte la soumission du formulaire d'ajout
+// Valide les champs, envoie un POST multipart à l'API,
+// puis met à jour le state et resynchronise les deux galeries en cas de succès
 async function handleFormSubmit(event) {
     event.preventDefault()  // empêche le rechargement de page
 
@@ -325,11 +347,11 @@ async function handleFormSubmit(event) {
 
     const fichier = photoInput.files[0]
     if (fichier.type !== "image/jpeg" && fichier.type !== "image/png"){
-        formError.textContent = "type de fichier incorect."
+        formError.textContent = "type de fichier incorrect."
         return
     }
     if (fichier.size > 4 * 1024 * 1024) {
-        formError.textContent = "poid maximum."
+        formError.textContent = "Fichier trop volumineux (4 Mo max)."
         return
     }
 
@@ -360,9 +382,6 @@ async function handleFormSubmit(event) {
         nouveauTravail.categoryId = parseInt(nouveauTravail.categoryId)
         works.push(nouveauTravail)
 
-        console.log("Nouveau travail reçu :", nouveauTravail)
-        console.log("Tableau works complet :", works)
-
         // Re-render les deux galeries avec la liste à jour
         renderGallery(works)
         renderModalGallery()
@@ -379,7 +398,8 @@ async function handleFormSubmit(event) {
     }
 }
 
-// 8. Remettre le formulaire dans son état initial après un succès
+// Remet le formulaire dans son état initial après un ajout réussi :
+// réinitialise les champs natifs et retire la prévisualisation d'image
 function resetForm() {
     document.getElementById("modalForm").reset()
 
@@ -391,6 +411,8 @@ function resetForm() {
     if (previewImg) previewImg.remove()
 }
 
+// Observe l'état des trois champs du formulaire en temps réel
+// et applique le style actif au bouton Valider uniquement quand tout est rempli
 function initFormValidationStyle() {
     const photoInput     = document.getElementById("photoInput")
     const titleInput     = document.getElementById("photoTitle")
@@ -411,27 +433,28 @@ function initFormValidationStyle() {
 }
 
 
-// Point d'entrée unique de l'application
+// Point d'entrée unique — charge les données depuis l'API,
+// puis initialise tous les composants de la page dans l'ordre
 async function init() {
     // On attend le chargement des deux routes API
-    await fetchWorks();
-    await fetchCategories();
+    await fetchWorks()
+    await fetchCategories()
    
     // Si des travaux ont été récupérés, on affiche la galerie par défaut
     if (works.length > 0) {
-        renderGallery(works);
+        renderGallery(works)
     }
    
     // On génère les boutons de filtres
-    renderBtnFilter();
-    renderCategoryOptions();
-    setupAuthLink();
-    setupEditionMode();
-    initModal();
-    showModalPage("page 1");
-    initFormValidationStyle();
+    renderBtnFilter()
+    renderCategoryOptions()
+    setupAuthLink()
+    setupEditionMode()
+    initModal()
+    showModalPage("page 1")
+    initFormValidationStyle()
 }
 
 // Lancement de l'application
-init();
+init()
 
