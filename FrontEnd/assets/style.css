@@ -536,3 +536,6 @@ dialog::backdrop {
     padding-bottom: 20px;
     text-align: center;
 }
+.modal__submit-btn--active { 
+    background-color: #1d6154;
+}

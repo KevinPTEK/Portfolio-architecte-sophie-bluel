@@ -395,15 +395,19 @@ function initFormValidationStyle() {
     const photoInput     = document.getElementById("photoInput")
     const titleInput     = document.getElementById("photoTitle")
     const categorySelect = document.getElementById("photoCategory")
+    const submitBtn      = document.getElementById("modalSubmitBtn")
 
     function updateButtonStyle() {
-        if (photoInput || titleInput || categorySelect === true){
-            const btnValidationGreen = document.querySelector("#modalSubmitBtn")
-            btnValidationGreen.classList.add("modal__submit-btn")
+        if (photoInput.files[0] && titleInput.value.trim() && categorySelect.value) {
+            submitBtn.classList.add("modal__submit-btn--active")    // tout rempli → vert
+        } else {
+            submitBtn.classList.remove("modal__submit-btn--active") // incomplet → couleur normale
         }
     }
 
-    // écouter les 3 champs avec le bon événement pour chacun
+    photoInput.addEventListener("change", updateButtonStyle)
+    titleInput.addEventListener("input", updateButtonStyle)
+    categorySelect.addEventListener("change", updateButtonStyle)
 }
 
 
@@ -425,6 +429,7 @@ async function init() {
     setupEditionMode();
     initModal();
     showModalPage("page 1");
+    initFormValidationStyle();
 }
 
 // Lancement de l'application
