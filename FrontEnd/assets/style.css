@@ -516,6 +516,7 @@ dialog::backdrop {
     border: none;
     width: 17px;
     height: 17px;
+    cursor: pointer;
 }
 .modal__gallery-delete img {
     position: absolute;
