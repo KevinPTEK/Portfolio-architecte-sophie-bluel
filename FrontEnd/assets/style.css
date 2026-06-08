@@ -543,3 +543,7 @@ dialog::backdrop {
 .hidden {
     display: none;
 }
+.error-message {
+    color: red;
+    text-align: center;
+}
