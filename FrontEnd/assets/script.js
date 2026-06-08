@@ -22,7 +22,7 @@ async function fetchWorks() {
         works = await reponse.json()
     } catch (erreur) {
         console.error("Impossible de récupérer les travaux :", erreur)
-        gallery.innerHTML = "<p style='color: red; text-align: center;'>Erreur lors du chargement des projets.</p>"
+        gallery.innerHTML = "<p class='error-message'>Erreur lors du chargement des projets.</p>"
     }
 }
 
