@@ -285,7 +285,7 @@ function showModalPage(page) {
     }
 }
 
-//ajout de travaux
+// ajout de travaux - catégories 
 // Peuple le <select> des catégories du formulaire d'ajout
 // depuis le tableau global `categories` — appelée une seule fois au démarrage
 function renderCategoryOptions() {
