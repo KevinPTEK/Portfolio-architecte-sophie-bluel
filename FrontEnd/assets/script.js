@@ -177,6 +177,7 @@ function setupAuthLink() {
     })
 }
 
+//modale
 // Vide et reconstruit la galerie de la modale depuis le tableau global `works`
 // Branche un écouteur de suppression sur chaque item
 function renderModalGallery() {
@@ -284,6 +285,7 @@ function showModalPage(page) {
     }
 }
 
+//ajout de travaux
 // Peuple le <select> des catégories du formulaire d'ajout
 // depuis le tableau global `categories` — appelée une seule fois au démarrage
 function renderCategoryOptions() {
